@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wangd.dao.MenusDAO">
+    <resultMap id="menusMap" type="com.wangd.pojo.Menus">
+        <result column="api.ps_id" property="id"/>
+        <result column="ps_api_action" property="apiAction"/>
+        <result column="ps_api_path" property="apiPath"/>
+        <result column="ps_api_order" property="apiOrder"/>
+        <result column="ps_name" property="menuName"/>
+        <result column="ps_id" property="menuId"/>
+        <result column="ps_pid" property="fatherMenuId"/>
+
+    </resultMap>
+
+
+
+    <select id="getMenus" resultMap="menusMap">
+        select * from sp_permission_api as api join sp_permission as sp on api.ps_id = sp.ps_id where sp.ps_id is not null order by ps_pid
+    </select>
+</mapper>

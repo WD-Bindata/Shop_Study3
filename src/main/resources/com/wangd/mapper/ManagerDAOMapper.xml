@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wangd.dao.ManagerDAO">
+    <resultMap id="managerMap" type="com.wangd.pojo.Manager">
+        <result column="mg_id" property="id"/>
+        <result column="mg_name" property="username"/>
+        <result column="mg_pwd" property="password"/>
+        <result column="mg_time" property="registrationTime"/>
+        <result column="role_id" property="roleId"/>
+        <result column="mg_mobile" property="mobile"/>
+        <result column="mg_email" property="email"/>
+        <result column="mg_state" property="state"/>
+    </resultMap>
+
+
+
+    <select id="queryManager" resultMap="managerMap" parameterType="String">
+        select * from sp_manager where mg_name=#{username} and mg_pwd=#{password}
+    </select>
+</mapper>
