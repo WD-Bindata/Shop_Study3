@@ -16,25 +16,41 @@ public class WebTest {
     @Test
     public void test(){
         ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
-        MenusDAO bean = ctx.getBean(MenusDAO.class);
-        Map<String, Object> menusMap = new HashMap<>();
-        List<Map> menusList = new ArrayList<>();
-        List<Menus> menus = bean.getMenus();
-        for (Menus menu : menus) {
-            if (menu.getFatherMenuId() == 0){
-                menusMap.put("id", menu.getMenuId());
-                menusMap.put("authName", menu.getMenuName());
-                menusMap.put("path", menu.getApiPath());
+        MenusDAO menusDAO = ctx.getBean(MenusDAO.class);
 
-            }else {
-                Map<String, Object> child = new HashMap<>();
-                child.put("id", menu.getMenuId());
-                child.put("authName", menu.getMenuName());
-                child.put("path", menu.getApiPath());
-                menusList.add(child);
+        List<Menus> menus = menusDAO.getMenus();
+
+
+        for (Menus menu : menus) {
+            List<Menus> childrenMenus = menusDAO.getChildrenMenus(menu.getMenuId());
+
+            if (!childrenMenus.isEmpty()){
+                menu.setChildren(childrenMenus);
             }
+            System.out.println("menu = " + menu);
+
         }
-        
+
+
+
+//        Map<String, Object> menusMap = new HashMap<>();
+//        List<Map> menusList = new ArrayList<>();
+//        List<Menus> menus = bean.getMenus();
+//        for (Menus menu : menus) {
+//            if (menu.getFatherMenuId() == 0){
+//                menusMap.put("id", menu.getMenuId());
+//                menusMap.put("authName", menu.getMenuName());
+//                menusMap.put("path", menu.getApiPath());
+//
+//            }else {
+//                Map<String, Object> child = new HashMap<>();
+//                child.put("id", menu.getMenuId());
+//                child.put("authName", menu.getMenuName());
+//                child.put("path", menu.getApiPath());
+//                menusList.add(child);
+//            }
+//        }
+
 
     }
 }

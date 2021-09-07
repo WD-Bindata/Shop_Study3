@@ -3,6 +3,9 @@ package com.wangd.pojo;
 import org.apache.ibatis.type.Alias;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangd
@@ -16,6 +19,7 @@ public class Menus implements Serializable {
     private Integer menuId;
     private Integer fatherMenuId;
     private String menuName;
+    private List<Menus> children = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -73,6 +77,14 @@ public class Menus implements Serializable {
         this.menuName = menuName;
     }
 
+    public List<Menus> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Menus> children) {
+        this.children = children;
+    }
+
     @Override
     public String toString() {
         return "Menus{" +
@@ -83,6 +95,7 @@ public class Menus implements Serializable {
                 ", menuId=" + menuId +
                 ", fatherMenuId=" + fatherMenuId +
                 ", menuName='" + menuName + '\'' +
+                ", children=" + children +
                 '}';
     }
 }

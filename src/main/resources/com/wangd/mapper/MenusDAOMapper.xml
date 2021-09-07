@@ -20,4 +20,9 @@
     <select id="getMenus" resultMap="menusMap">
         select * from sp_permission_api as api join sp_permission as sp on api.ps_id = sp.ps_id where sp.ps_id is not null order by ps_pid
     </select>
+
+    <select id="getChildrenMenus" resultMap="menusMap">
+        select * from sp_permission_api as api join sp_permission as sp on api.ps_id = sp.ps_id where ps_pid = #{menuId}
+    </select>
+
 </mapper>
