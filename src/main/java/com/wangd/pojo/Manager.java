@@ -12,11 +12,21 @@ public class Manager implements Serializable {
     private Integer id;
     private String username;
     private String password;
-    private long registrationTime;
+    private Integer registrationTime;
     private Integer roleId;
     private String mobile;
     private String email;
     private Integer state;
+    private Integer type;
+    private Role role;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public Integer getId() {
         return id;
@@ -42,11 +52,11 @@ public class Manager implements Serializable {
         this.password = password;
     }
 
-    public long getRegistrationTime() {
+    public Integer getRegistrationTime() {
         return registrationTime;
     }
 
-    public void setRegistrationTime(long registrationTime) {
+    public void setRegistrationTime(Integer registrationTime) {
         this.registrationTime = registrationTime;
     }
 
@@ -82,6 +92,14 @@ public class Manager implements Serializable {
         this.state = state;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "Manager{" +
@@ -93,6 +111,8 @@ public class Manager implements Serializable {
                 ", mobile='" + mobile + '\'' +
                 ", email='" + email + '\'' +
                 ", state=" + state +
+                ", type=" + type +
+                ", role=" + role +
                 '}';
     }
 }

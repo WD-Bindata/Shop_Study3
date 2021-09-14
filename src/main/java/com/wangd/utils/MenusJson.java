@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wangd.pojo.Menus;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,16 +15,21 @@ import java.util.Map;
  */
 public class MenusJson {
 
-    public static Map<String, Object> getMenusJson(List<Menus> menus){
+    public static Map<String, Object> getMenusJson(Menus menus){
         Map<String, Object> menusMap = new HashMap<>();
-        for (Menus menu : menus) {
+        menusMap.put("id", menus.getMenuId());
+        menusMap.put("authName", menus.getMenuName());
+        menusMap.put("path", menus.getApiPath());
+        List<Menus> children = menus.getChildren();
+        List<Map<String, Object>> childrenList = new ArrayList<>();
+        if (!children.isEmpty()){
+            children.forEach(childrenMenu -> {
+                Map<String, Object> menusJson = MenusJson.getMenusJson(childrenMenu);
+                childrenList.add(menusJson);
 
-            menusMap.put("id", menu.getMenuId());
-            menusMap.put("authName", menu.getMenuName());
-            menusMap.put("path", menu.getApiPath());
-
+            });
         }
-
+        menusMap.put("children", childrenList);
         return menusMap;
     }
 

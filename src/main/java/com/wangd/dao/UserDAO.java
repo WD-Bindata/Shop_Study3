@@ -3,6 +3,8 @@ package com.wangd.dao;
 import com.wangd.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author wangd
  */

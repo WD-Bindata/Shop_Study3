@@ -27,7 +27,7 @@ public class TokenUtils {
         Map<String, Object> header = new HashMap<>(2);
         header.put("typ", "JWT");
         header.put("alg", "SH256");
-        return JWT.create().withHeader(header).withClaim("loginName", username)
+        return "Bearer " + JWT.create().withHeader(header).withClaim("loginName", username)
                 .withClaim("userId", userId).withExpiresAt(date).sign(algorithm);
     }
 
@@ -35,7 +35,7 @@ public class TokenUtils {
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).build();
-            DecodedJWT jwt = verifier.verify(token);
+            DecodedJWT jwt = verifier.verify(token.replace("Bearer ", ""));
             return true;
         }catch (Exception exception){
             return false;

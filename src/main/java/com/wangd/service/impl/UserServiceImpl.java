@@ -10,8 +10,7 @@ import com.wangd.utils.MenusJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author wangd
@@ -21,7 +20,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
     private MenusDAO menusDAO;
+
     @Override
     public int addUser(User user) {
         return userDAO.insert(user);
@@ -34,27 +35,32 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    public List<String> getMenus(){
-        List<Menus> menus = menusDAO.getMenus();
-        for (Menus menu : menus) {
-            Menus menus1 = this.setChildren(menu);
-//            Map<String, Object> menusJson = MenusJson.getMenusJson();
+    @Override
+    public Map<Integer, Menus> getMenus(){
+        List<Menus> menusList = menusDAO.getMenus();
+        // 根据标签排序
+        menusList.sort(new Comparator<Menus>() {
+            @Override
+            public int compare(Menus o1, Menus o2) {
+                if (o1.getLevel() < o2.getLevel()){
+                    return -1;
+                } else {
+                    return 0;
+                }
+
+            }
+        });
+        Map<Integer, Menus> oneMenus = new HashMap<>();
+        for (Menus menu : menusList) {
+            if (menu.getLevel() == 0){
+                oneMenus.put(menu.getMenuId(), menu);
+            } else if (menu.getLevel() == 1){
+                Menus menus2 = oneMenus.get(menu.getFatherMenuId());
+                List<Menus> children = menus2.getChildren();
+                children.add(menu);
+            }
         }
-        return null;
+        return oneMenus;
     }
 
-    private Menus setChildren(Menus menus){
-        List<Menus> childrenMenus = menusDAO.getChildrenMenus(menus.getMenuId());
-        if (childrenMenus.isEmpty()){
-            return menus;
-        }
-        List<Menus> children = menus.getChildren();
-        for (Menus childrenMenu : childrenMenus) {
-            Menus children1 = setChildren(childrenMenu);
-            children.add(children1);
-        }
-        menus.setChildren(children);
-        return menus;
-
-    }
 }

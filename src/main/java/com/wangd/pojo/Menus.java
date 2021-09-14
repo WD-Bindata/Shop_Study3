@@ -20,6 +20,7 @@ public class Menus implements Serializable {
     private Integer fatherMenuId;
     private String menuName;
     private List<Menus> children = new ArrayList<>();
+    private Integer level;
 
     public Integer getId() {
         return id;
@@ -85,6 +86,14 @@ public class Menus implements Serializable {
         this.children = children;
     }
 
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     @Override
     public String toString() {
         return "Menus{" +
@@ -96,6 +105,7 @@ public class Menus implements Serializable {
                 ", fatherMenuId=" + fatherMenuId +
                 ", menuName='" + menuName + '\'' +
                 ", children=" + children +
+                ", level=" + level +
                 '}';
     }
 }

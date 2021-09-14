@@ -12,7 +12,7 @@
         <result column="ps_name" property="menuName"/>
         <result column="ps_id" property="menuId"/>
         <result column="ps_pid" property="fatherMenuId"/>
-
+        <result column="ps_level" property="level"/>
     </resultMap>
 
 

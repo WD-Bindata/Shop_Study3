@@ -6,17 +6,32 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="com.wangd.controller"/>
-    <mvc:default-servlet-handler />
+    <mvc:default-servlet-handler/>
     <mvc:annotation-driven/>
     <mvc:cors>
         <mvc:mapping path="/**"
                      allowed-origins="*"
-                     allowed-methods="POST, GET, OPTIONS, DELETE, PUT"
-                     allowed-headers="Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-                     allow-credentials="true" />
+                     allowed-methods="*"
+                     allowed-headers="*"
+                     allow-credentials="true" max-age="36000"
+
+        />
     </mvc:cors>
 
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven >
+        <mvc:message-converters>
+            <!-- 处理响应中文内容乱码 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="defaultCharset" value="UTF-8" />
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
     <mvc:interceptors>
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="language"/>

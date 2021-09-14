@@ -44,6 +44,7 @@ public class CORSFilter implements Filter {
                     "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With,userId,token");
             httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
             httpServletResponse.setHeader("XDomainRequestAllowed", "1");
+
         }
         chain.doFilter(request, response);
     }

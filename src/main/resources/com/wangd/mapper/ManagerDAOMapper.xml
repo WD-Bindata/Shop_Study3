@@ -13,11 +13,33 @@
         <result column="mg_mobile" property="mobile"/>
         <result column="mg_email" property="email"/>
         <result column="mg_state" property="state"/>
+        <association property="role" column="role" javaType="com.wangd.pojo.Role">
+            <result column="role_id" property="roleId"/>
+            <result column="role_name" property="roleName"/>
+            <result column="ps_ids" property="roleIds"/>
+            <result column="ps_ca" property="controllerOperation"/>
+            <result column="role_desc" property="roleDesc"/>
+        </association>
     </resultMap>
 
 
 
     <select id="queryManager" resultMap="managerMap" parameterType="String">
-        select * from sp_manager where mg_name=#{username} and mg_pwd=#{password}
+        SELECT * FROM sp_manager WHERE mg_name=#{username} AND mg_pwd=#{password}
     </select>
+
+    <select id="byUsernameQueryManager" resultMap="managerMap">
+        SELECT * FROM sp_manager as manager LEFT JOIN sp_role as role on manager.role_id=role.role_id
+    <if test="queryParam != null">
+        WHERE manager.mg_name LIKE '%${queryParam}%'
+    </if>
+        LIMIT ${pageNumber}, ${pageSize}
+    </select>
+
+    <insert id="insertManager" parameterType="com.wangd.pojo.Manager" keyProperty="id" useGeneratedKeys="false" keyColumn="mg_id">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+        insert into sp_manager(mg_name, mg_pwd, mg_email, mg_mobile, mg_time) values (#{username}, #{password}, #{email}, #{mobile}, #{registrationTime})
+    </insert>
 </mapper>
