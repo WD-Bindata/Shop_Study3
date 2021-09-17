@@ -23,7 +23,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         response.setCharacterEncoding("UTF-8");
-        if ("OPTIONS".equals(request.getMethod().toUpperCase())){
+        if ("OPTIONS".equals(request.getMethod().toUpperCase()) || "PUT".equals(request.getMethod().toUpperCase())){
 
             return true;
         }

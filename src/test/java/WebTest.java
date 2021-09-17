@@ -86,6 +86,17 @@ public class WebTest {
 
     }
 
+    /**
+     * 用于测试：更新账户状态
+     */
+    @Test
+    public void test05(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        ManagerDAO managerDAO = ctx.getBean(ManagerDAO.class);
+        int manager = managerDAO.updateState(519, 1);
+        System.out.println("manager = " + manager);
+    }
+
 
 
 

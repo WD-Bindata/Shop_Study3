@@ -42,4 +42,27 @@
         </selectKey>
         insert into sp_manager(mg_name, mg_pwd, mg_email, mg_mobile, mg_time) values (#{username}, #{password}, #{email}, #{mobile}, #{registrationTime})
     </insert>
+
+    <select id="queryById" resultMap="managerMap">
+        select * from sp_manager where mg_id=#{managerId}
+    </select>
+
+    <update id="updateState" parameterType="_int">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        update sp_manager set mg_state=#{state} where mg_id=#{userid}
+    </update>
+
+    <update id="updateManager" parameterType="com.wangd.pojo.Manager">
+        update sp_manager set mg_email=#{manager.email}, mg_mobile=#{manager.mobile} where mg_id=#{manager.id}
+    </update>
+
+    <delete id="deleteById" parameterType="_int">
+        delete from sp_manager where mg_id=#{userid}
+    </delete>
+
+    <select id="getManagerCount" resultType="int">
+        select count(1) from sp_manager
+    </select>
 </mapper>

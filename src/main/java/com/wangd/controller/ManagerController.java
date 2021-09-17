@@ -77,9 +77,12 @@ public class ManagerController {
     @ResponseBody
     @GetMapping("/users")
     public String getUsers(@RequestParam("query") String queryParam, @RequestParam("pagenum") Integer currPage, @RequestParam("pagesize") Integer pageSize){
+        System.out.println("queryParam = " + queryParam);
+        System.out.println("currPage = " + currPage);
+        System.out.println("pageSize = " + pageSize);
         List<Manager> managerList = managerService.queryAllManager(queryParam, currPage, pageSize);
         JSONObject managerResult = new JSONObject();
-        managerResult.put("total", managerList.size());
+        managerResult.put("total", managerService.getCount());
         managerResult.put("pagenum", currPage);
         List<Object> jsonArray = new ArrayList<>();
         Map<String, Object> jsonObject = new HashMap<>();
@@ -125,9 +128,75 @@ public class ManagerController {
     }
 
     @ResponseBody
-    @PutMapping("/users/{managerId}")
+    @GetMapping("/users/{managerId}")
     public String editManager(@PathVariable("managerId") Integer managerId) {
-        System.out.println("managerId = " + managerId);
-        return null;
+        Manager manager = managerService.queryById(managerId);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("id", manager.getId());
+        resultMap.put("username", manager.getUsername());
+        resultMap.put("role_id", manager.getRoleId());
+        resultMap.put("mobile", manager.getMobile());
+        resultMap.put("email", manager.getEmail());
+        requestResult.data = resultMap;
+        requestResult.msg = "查询成功";
+        return requestResult.getResult();
     }
+
+    @ResponseBody
+    @PutMapping("/users/{userid}/state/{type}")
+    public String setupUserState(@PathVariable("userid") Integer userid,@PathVariable("type") Boolean type){
+        System.out.println("type = " + type);
+        // 判断返回值 1为开启 0为关闭
+        Integer state = type ? 1:0;
+        Manager manager = managerService.editState(userid, state);
+        if (manager == null){
+            requestResult.msg = "状态更改失败";
+            requestResult.status = 304;
+            return requestResult.getResult();
+        }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("id", manager.getId());
+        resultMap.put("username", manager.getUsername());
+        resultMap.put("role_id", manager.getRoleId());
+        resultMap.put("mobile", manager.getMobile());
+        resultMap.put("email", manager.getEmail());
+        requestResult.data = resultMap;
+        requestResult.msg = "更改用户状态成功";
+        return requestResult.getResult();
+    }
+
+    @ResponseBody
+    @PutMapping("/users/{userid}")
+    public String editManager(@RequestBody Manager manager){
+        Manager editManager = managerService.editManager(manager);
+        if (manager == null){
+            requestResult.msg = "更新账户信息失败";
+            requestResult.data = null;
+            return requestResult.getResult();
+        }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("id", editManager.getId());
+        resultMap.put("username", editManager.getUsername());
+        resultMap.put("role_id", editManager.getRoleId());
+        resultMap.put("mobile", editManager.getMobile());
+        resultMap.put("email", editManager.getEmail());
+        requestResult.data = resultMap;
+        requestResult.msg = "更改用户信息成功";
+        return requestResult.getResult();
+    }
+
+    @ResponseBody
+    @DeleteMapping("/users/{userid}")
+    public String deleteManager(@PathVariable("userid") Integer userid){
+        int deleteCount = managerService.deleteById(userid);
+        requestResult.data = null;
+        if (deleteCount == 0){
+            requestResult.msg = "删除失败";
+            requestResult.status = 202;
+            return requestResult.getResult();
+        }
+        requestResult.msg = "删除成功";
+        return requestResult.getResult();
+    }
+
 }

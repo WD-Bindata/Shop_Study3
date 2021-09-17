@@ -27,4 +27,5 @@
     <select id="selectByUsername" resultMap="userMap">
         select * from sp_user where username=#{username} and password=#{password}
     </select>
+
 </mapper>

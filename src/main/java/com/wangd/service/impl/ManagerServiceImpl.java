@@ -32,7 +32,43 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    public int getCount() {
+        return managerDAO.getManagerCount();
+    }
+
+    @Override
     public int addManager(Manager manager) {
         return managerDAO.insertManager(manager);
+    }
+
+    @Override
+    public Manager queryById(Integer managerId) {
+        return managerDAO.queryById(managerId);
+    }
+
+    @Override
+    public Manager editState(Integer userid, Integer state){
+        int number_of_affected = managerDAO.updateState(userid, state);
+        Manager manager = null;
+        // 判断影响条数
+        if (number_of_affected == 1){
+            manager = managerDAO.queryById(userid);
+        }
+        return manager;
+    }
+
+    @Override
+    public Manager editManager(Manager manager) {
+        int i = managerDAO.updateManager(manager);
+        Manager managerResult = null;
+        if (i == 1){
+            managerResult = managerDAO.queryById(manager.getId());
+        }
+        return managerResult;
+    }
+
+    @Override
+    public int deleteById(Integer userid) {
+        return managerDAO.deleteById(userid);
     }
 }
