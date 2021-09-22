@@ -9,7 +9,7 @@ import java.util.List;
  * @author wangd
  */
 public interface MenusDAO {
-    public List<Menus> getMenus();
+    public List<Menus> queryAllMenus();
 
-    public List<Menus> getChildrenMenus(@Param("menuId") Integer menuId);
+    public List<Menus> queryByChildren(@Param("menuId") Integer menuId);
 }

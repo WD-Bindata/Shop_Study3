@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wangd.dao.RoleDAO">
+    <resultMap id="roleMap" type="role">
+
+        <result column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="ps_ids" property="roleIds"/>
+        <result column="ps_ca" property="controllerOperation"/>
+        <result column="role_desc" property="roleDesc"/>
+
+    </resultMap>
+    <select id="queryAllRole" resultMap="roleMap">
+        select * from sp_role
+    </select>
+</mapper>

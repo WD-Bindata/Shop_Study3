@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.wangd.dao.MenusDAO">
-    <resultMap id="menusMap" type="com.wangd.pojo.Menus">
+    <resultMap id="menusMap" type="menus">
         <result column="api.ps_id" property="id"/>
         <result column="ps_api_action" property="apiAction"/>
         <result column="ps_api_path" property="apiPath"/>
@@ -17,11 +17,11 @@
 
 
 
-    <select id="getMenus" resultMap="menusMap">
+    <select id="queryAllMenus" resultMap="menusMap">
         select * from sp_permission_api as api join sp_permission as sp on api.ps_id = sp.ps_id where sp.ps_id is not null order by ps_pid
     </select>
 
-    <select id="getChildrenMenus" resultMap="menusMap">
+    <select id="queryByChildren" resultMap="menusMap">
         select * from sp_permission_api as api join sp_permission as sp on api.ps_id = sp.ps_id where ps_pid = #{menuId}
     </select>
 

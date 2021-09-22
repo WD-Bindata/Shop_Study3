@@ -1,14 +1,21 @@
 package com.wangd.pojo;
 
+import org.apache.ibatis.type.Alias;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author wangd
  */
+@Alias("role")
 public class Role {
     private Integer roleId;
     private String roleName;
     private String roleIds;
     private String controllerOperation;
     private String roleDesc;
+    private List<Menus> menusList = new ArrayList<>();
 
     public Integer getRoleId() {
         return roleId;
@@ -50,6 +57,14 @@ public class Role {
         this.roleDesc = roleDesc;
     }
 
+    public List<Menus> getMenusList() {
+        return menusList;
+    }
+
+    public void setMenusList(List<Menus> menusList) {
+        this.menusList = menusList;
+    }
+
     @Override
     public String toString() {
         return "Role{" +
@@ -58,6 +73,7 @@ public class Role {
                 ", roleIds='" + roleIds + '\'' +
                 ", controllerOperation='" + controllerOperation + '\'' +
                 ", roleDesc='" + roleDesc + '\'' +
+                ", menusList=" + menusList +
                 '}';
     }
 }

@@ -11,4 +11,6 @@ import java.util.List;
 public interface UserDAO {
     public int insert(User user);
     public User selectByUsername(@Param("username") String username,@Param("password") String password);
+
+
 }

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.wangd.dao.ManagerDAO">
-    <resultMap id="managerMap" type="com.wangd.pojo.Manager">
+    <resultMap id="managerMap" type="manager">
         <result column="mg_id" property="id"/>
         <result column="mg_name" property="username"/>
         <result column="mg_pwd" property="password"/>
@@ -13,7 +13,7 @@
         <result column="mg_mobile" property="mobile"/>
         <result column="mg_email" property="email"/>
         <result column="mg_state" property="state"/>
-        <association property="role" column="role" javaType="com.wangd.pojo.Role">
+        <association property="role" column="role" javaType="role">
             <result column="role_id" property="roleId"/>
             <result column="role_name" property="roleName"/>
             <result column="ps_ids" property="roleIds"/>
@@ -36,7 +36,7 @@
         LIMIT ${pageNumber}, ${pageSize}
     </select>
 
-    <insert id="insertManager" parameterType="com.wangd.pojo.Manager" keyProperty="id" useGeneratedKeys="false" keyColumn="mg_id">
+    <insert id="insertManager" parameterType="manager" keyProperty="id" useGeneratedKeys="false" keyColumn="mg_id">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID() as id
         </selectKey>
@@ -54,7 +54,7 @@
         update sp_manager set mg_state=#{state} where mg_id=#{userid}
     </update>
 
-    <update id="updateManager" parameterType="com.wangd.pojo.Manager">
+    <update id="updateManager" parameterType="manager">
         update sp_manager set mg_email=#{manager.email}, mg_mobile=#{manager.mobile} where mg_id=#{manager.id}
     </update>
 
@@ -65,4 +65,9 @@
     <select id="getManagerCount" resultType="int">
         select count(1) from sp_manager
     </select>
+
+    <select id="queryManagerAndRoleById" resultMap="managerMap">
+        select * from sp_manager as manager join sp_role sr on manager.role_id = sr.role_id where manager.mg_id = #{managerId}
+    </select>
+
 </mapper>

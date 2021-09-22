@@ -24,7 +24,9 @@ import java.util.*;
  * @author wangd
  */
 @Controller
-@CrossOrigin(methods = {RequestMethod.PUT, RequestMethod.GET, RequestMethod.POST})
+@CrossOrigin(
+        methods = {RequestMethod.PUT, RequestMethod.GET,
+        RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.DELETE})
 public class ManagerController {
 
     @Autowired
@@ -85,9 +87,10 @@ public class ManagerController {
         managerResult.put("total", managerService.getCount());
         managerResult.put("pagenum", currPage);
         List<Object> jsonArray = new ArrayList<>();
-        Map<String, Object> jsonObject = new HashMap<>();
-        for (Manager manager : managerList) {
 
+        for (Manager manager : managerList) {
+            // 接口返回模版 jsonObject
+            Map<String, Object> jsonObject = new HashMap<>();
             jsonObject.put("id", manager.getId());
             jsonObject.put("username", manager.getUsername());
             jsonObject.put("mobile", manager.getMobile());
@@ -97,6 +100,7 @@ public class ManagerController {
             jsonObject.put("mg_state", manager.getState() == 1);
             jsonObject.put("role_name", manager.getRole().getRoleName());
             jsonArray.add(jsonObject);
+//            jsonObject.clear();
         }
         managerResult.put("users", jsonArray);
         requestResult.data = managerResult;

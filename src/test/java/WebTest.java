@@ -1,11 +1,15 @@
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONWriter;
+import com.wangd.controller.AuthorityManager;
 import com.wangd.controller.ManagerController;
 import com.wangd.controller.UserController;
 import com.wangd.dao.ManagerDAO;
+import com.wangd.dao.RoleDAO;
 import com.wangd.pojo.Manager;
 import com.wangd.pojo.Menus;
+import com.wangd.pojo.Role;
 import com.wangd.service.ManagerService;
+import com.wangd.service.RoleService;
 import com.wangd.service.UserService;
 import com.wangd.utils.MenusJson;
 import com.wangd.utils.TokenUtils;
@@ -60,7 +64,7 @@ public class WebTest {
     public void test03(){
         ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
         ManagerController managerController = ctx.getBean(ManagerController.class);
-        String users = managerController.getUsers(null, 0, 10);
+        String users = managerController.getUsers(null, 2, 10);
         System.out.println("users = " + users);
 
 
@@ -98,6 +102,41 @@ public class WebTest {
     }
 
 
+    /**
+     * 用于测试：菜单栏
+     */
+    @Test
+    public void test06(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        UserController userController = ctx.getBean(UserController.class);
+        String menus = userController.getMenus();
+        System.out.println("menus = " + menus);
+    }
+
+    /**
+     * 用于测试：role
+     */
+    @Test
+    public void test07(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        RoleDAO roleDAO = ctx.getBean(RoleDAO.class);
+        List<Role> roleList = roleDAO.queryAllRole();
+        roleList.forEach(role -> {
+            System.out.println("role = " + role);
+        });
+
+    }
+
+    /**
+     * 用于测试：获取Manager和role
+     */
+    @Test
+    public void test08(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        AuthorityManager bean = ctx.getBean(AuthorityManager.class);
+        String roles = bean.getRoles();
+        System.out.println("roles = " + roles);
+    }
 
 
 

@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author wangd
@@ -34,8 +32,12 @@ public class UserController {
         for (Integer integer : menus.keySet()) {
             Menus menus1 = menus.get(integer);
             Map<String, Object> menusJson = MenusJson.getMenusJson(menus1);
+            System.out.println("menus1 = " + menus1.getApiOrder());
             menusList.add(menusJson);
+
         }
+        // 列表反转
+        Collections.reverse(menusList);
         result.data = menusList;
         result.msg = "获取菜单列表成功";
         String result = this.result.getResult();

@@ -16,4 +16,6 @@ public interface UserService {
 
     public Map<Integer, Menus> getMenus();
 
+    public Map<Integer, Menus> getRoleHelp(String[] ids);
+
 }

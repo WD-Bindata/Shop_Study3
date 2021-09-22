@@ -7,6 +7,7 @@ import com.wangd.pojo.Menus;
 import com.wangd.pojo.User;
 import com.wangd.service.UserService;
 import com.wangd.utils.MenusJson;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,25 +31,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String username, String password) {
-        User user = userDAO.selectByUsername(username, password);
 
-        return user;
+
+        return userDAO.selectByUsername(username, password);
     }
 
     @Override
     public Map<Integer, Menus> getMenus(){
-        List<Menus> menusList = menusDAO.getMenus();
+        List<Menus> menusList = menusDAO.queryAllMenus();
         // 根据标签排序
-        menusList.sort(new Comparator<Menus>() {
-            @Override
-            public int compare(Menus o1, Menus o2) {
-                if (o1.getLevel() < o2.getLevel()){
-                    return -1;
-                } else {
-                    return 0;
-                }
-
+        menusList.sort((o1, o2) -> {
+            if (o1.getLevel() < o2.getLevel()){
+                return -1;
+            } else {
+                return 0;
             }
+
         });
         Map<Integer, Menus> oneMenus = new HashMap<>();
         for (Menus menu : menusList) {
@@ -62,5 +60,50 @@ public class UserServiceImpl implements UserService {
         }
         return oneMenus;
     }
+
+    @Override
+    public Map<Integer, Menus> getRoleHelp(String[] ids) {
+
+        List<Menus> menusList = menusDAO.queryAllMenus();
+
+        List<Menus> roleHelpList = new ArrayList<>();
+        List<String> stringList = Arrays.asList(ids);
+        menusList.forEach(menus -> {
+            Integer menuId = menus.getMenuId();
+            if (stringList.contains(String.valueOf(menuId))){
+             roleHelpList.add(menus);
+            }
+        });
+        // 根据标签排序
+        menusList.sort((o1, o2) -> {
+            if (o1.getLevel() < o2.getLevel()){
+                return -1;
+            } else {
+                return 0;
+            }
+
+        });
+
+
+        Map<Integer, Menus> oneMenus = new HashMap<>();
+
+        for (Menus menu : menusList) {
+            if (menu.getLevel() == 0){
+                oneMenus.put(menu.getMenuId(), menu);
+            } else if (menu.getLevel() == 1){
+                Menus menus1 = oneMenus.get(menu.getFatherMenuId());
+
+                List<Menus> children = menus1.getChildren();
+                children.add(menu);
+            } else if (menu.getLevel() == 2){
+                Menus menus2 = oneMenus.get(menu.getFatherMenuId());
+
+                List<Menus> children = menus2.getChildren();
+                children.add(menu);
+            }
+        }
+        return oneMenus;
+    }
+
 
 }
