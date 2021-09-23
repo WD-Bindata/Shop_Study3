@@ -195,14 +195,43 @@ public class WebTest {
         List<Integer> ids = Arrays.asList(101, 104, 105, 116, 117, 150, 151, 152, 153, 115, 142, 143, 144, 121, 122, 123, 149, 103, 111, 129, 130, 134, 135, 138, 139, 140, 141, 112, 147, 125, 110, 131, 132, 133, 136, 137, 159, 146);
 
         List<Menus> menusList = menusDAO.queryAllMenus();
+
+        menusList.sort((o1, o2) -> {
+            if (o1.getLevel() < o2.getLevel()){
+                return -1;
+            } else {
+                return 0;
+            }
+
+        });
+
         Map<Integer, Menus> result = new HashMap<>();
         Map<Integer, Menus> jurisdiction2 = new HashMap<>();
         Map<Integer, Menus> jurisdiction3 = new HashMap<>();
-        for (Menus menus : menusList) {
-            if (menus.getLevel() == 1){
-                result.put(menus.getMenuId(), menus);
+        for (Menus menu : menusList) {
+            if (menu.getLevel() == 0){
+                result.put(menu.getMenuId(), menu);
+            } else if (menu.getLevel() == 1){
+                Menus menus2 = result.get(menu.getFatherMenuId());
+                List<Menus> children = menus2.getChildren();
+                children.add(menu);
+                jurisdiction2.put(menu.getMenuId(), menu);
             }
         }
+
+        for (Menus menus : menusList) {
+            if (menus.getLevel() == 2 && jurisdiction2.containsKey(menus.getFatherMenuId()) && ids.contains(menus.getFatherMenuId())){
+                Menus menus2 = jurisdiction2.get(menus.getFatherMenuId()); // 获得二级标签
+                Menus menus1 = result.get(menus2.getFatherMenuId());  // 获得一级标签
+
+                List<Menus> children = menus2.getChildren();
+                children.add(menus);
+                List<Menus> children1 = menus1.getChildren();
+                children1.add(menus2);
+                jurisdiction3.put(menus.getMenuId(), menus);
+            }
+        }
+        System.out.println("result = " + result);
 
 
     }
