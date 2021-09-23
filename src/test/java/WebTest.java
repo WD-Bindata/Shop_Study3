@@ -4,6 +4,7 @@ import com.wangd.controller.AuthorityManager;
 import com.wangd.controller.ManagerController;
 import com.wangd.controller.UserController;
 import com.wangd.dao.ManagerDAO;
+import com.wangd.dao.MenusDAO;
 import com.wangd.dao.RoleDAO;
 import com.wangd.pojo.Manager;
 import com.wangd.pojo.Menus;
@@ -133,12 +134,77 @@ public class WebTest {
     @Test
     public void test08(){
         ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
-        AuthorityManager bean = ctx.getBean(AuthorityManager.class);
-        String roles = bean.getRoles();
-        System.out.println("roles = " + roles);
+        UserService bean = ctx.getBean(UserService.class);
+        RoleService roleService = ctx.getBean(RoleService.class);
+        MenusDAO menusDAO = ctx.getBean(MenusDAO.class);
+        List<Menus> menusList = menusDAO.queryAllMenus();
+        menusList.sort((o1, o2) -> {
+            if (o1.getLevel() < o2.getLevel()){
+                return -1;
+            } else {
+                return 0;
+            }
+
+        });
+        Map<Integer, Menus> oneMenus = new HashMap<>();
+        menusList.forEach(menus -> {
+            if (menus.getLevel() == 0){
+                oneMenus.put(menus.getMenuId(), menus);
+            } else if (menus.getLevel() == 1){
+                Menus menus2 = oneMenus.get(menus.getFatherMenuId());
+                List<Menus> children = menus2.getChildren();
+                children.add(menus2);
+            }else if (menus.getLevel() == 2){
+                Menus menus2 = oneMenus.get(menus.getFatherMenuId());
+                if (menus2 != null){
+                    List<Menus> children = menus2.getChildren();
+                    children.add(menus2);
+                }
+            }
+        });
+
+        System.out.println("oneMenus = " + oneMenus);
+
+        List<Role> roleList = roleService.getRoles();
+        Role role = roleList.get(0);
+        String roleIds = role.getRoleIds();
+        List<String> asList = Arrays.asList();
+
+        Map<Integer, Menus> roleHelp = bean.getRoleHelp();
+
+
+        for (Integer integer : roleHelp.keySet()) {
+            Menus menus = roleHelp.get(integer);
+            Integer menuId = menus.getMenuId();
+            if (asList.contains(String.valueOf(menuId))){
+                System.out.println("menus = " + menus);
+            }
+        }
     }
 
 
 
+    /**
+     * 用于测试：处理三级权限
+     */
+    @Test
+    public void test09(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        MenusDAO menusDAO = ctx.getBean(MenusDAO.class);
+
+        List<Integer> ids = Arrays.asList(101, 104, 105, 116, 117, 150, 151, 152, 153, 115, 142, 143, 144, 121, 122, 123, 149, 103, 111, 129, 130, 134, 135, 138, 139, 140, 141, 112, 147, 125, 110, 131, 132, 133, 136, 137, 159, 146);
+
+        List<Menus> menusList = menusDAO.queryAllMenus();
+        Map<Integer, Menus> result = new HashMap<>();
+        Map<Integer, Menus> jurisdiction2 = new HashMap<>();
+        Map<Integer, Menus> jurisdiction3 = new HashMap<>();
+        for (Menus menus : menusList) {
+            if (menus.getLevel() == 1){
+                result.put(menus.getMenuId(), menus);
+            }
+        }
+
+
+    }
 
 }

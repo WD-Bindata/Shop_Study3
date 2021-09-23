@@ -62,18 +62,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<Integer, Menus> getRoleHelp(String[] ids) {
+    public Map<Integer, Menus> getRoleHelp() {
 
         List<Menus> menusList = menusDAO.queryAllMenus();
 
         List<Menus> roleHelpList = new ArrayList<>();
-        List<String> stringList = Arrays.asList(ids);
-        menusList.forEach(menus -> {
-            Integer menuId = menus.getMenuId();
-            if (stringList.contains(String.valueOf(menuId))){
-             roleHelpList.add(menus);
-            }
-        });
+//        List<String> stringList = Arrays.asList(ids);
+//        menusList.forEach(menus -> {
+//            Integer menuId = menus.getMenuId();
+//            if (stringList.contains(String.valueOf(menuId))){
+//             roleHelpList.add(menus);
+//            }
+//        });
         // 根据标签排序
         menusList.sort((o1, o2) -> {
             if (o1.getLevel() < o2.getLevel()){
@@ -97,13 +97,27 @@ public class UserServiceImpl implements UserService {
                 children.add(menu);
             } else if (menu.getLevel() == 2){
                 Menus menus2 = oneMenus.get(menu.getFatherMenuId());
+                if (menus2 == null){
+                    continue;
+                }
 
                 List<Menus> children = menus2.getChildren();
+                menu.setChildren(null);
                 children.add(menu);
             }
         }
+
+
         return oneMenus;
     }
 
+    private Menus searchMenus(Map<Integer, Menus> menusMap, Menus menu){
+        for (Integer integer : menusMap.keySet()) {
+            if (integer.equals(menu.getMenuId())){
+                return menusMap.get(integer);
+            }
+        }
+        return null;
+    }
 
 }
