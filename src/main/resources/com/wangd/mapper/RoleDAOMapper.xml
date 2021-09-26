@@ -16,4 +16,50 @@
     <select id="queryAllRole" resultMap="roleMap">
         select * from sp_role
     </select>
+
+    <insert id="addRole" parameterType="role">
+        <!--keyProperty属性可以设置为Role对应的成员变量名称-->
+        <selectKey order="AFTER" resultType="java.lang.Integer" keyProperty="roleId">
+            select last_insert_id()
+        </selectKey>
+        insert into sp_role(role_name, role_desc) values (#{roleName}, #{roleDesc})
+    </insert>
+
+    <select id="queryOneRole" resultMap="roleMap">
+        select * from sp_role where role_id = #{roleId,jdbcType=INTEGER}
+    </select>
+    <sql id="byRoleId">
+        where role_id=#{roleId}
+    </sql>
+    <update id="updateRole" parameterType="role">
+        update sp_role
+        <!--为了放置直接使用choose标签 在条件的最后多处 逗号(,) 所以使用set标签进行包裹-->
+        <set>
+            <choose>
+                <when test="roleName != null and roleName != ''">
+                    role_name=#{roleName},
+                </when>
+                <when test="roleDesc!=null and roleDesc != ''">
+                    role_desc=#{roleDesc},
+                </when>
+                <when test="roleIds != null and roleIds != ''">
+                    ps_ids = #{roleIds}
+                </when>
+            </choose>
+        </set>
+
+        <where>
+            role_id=#{roleId}
+        </where>
+    </update>
+
+
+
+    <delete id="deleteByRoleId" parameterType="java.lang.Integer">
+        delete from sp_role where role_id = #{roleId}
+    </delete>
+
+    <update id="updateRoleIds">
+        update sp_role set ps_ids = #{roleIds} where role_id = #{roleId}
+    </update>
 </mapper>

@@ -21,8 +21,8 @@
         select * from sp_permission_api as api join sp_permission as sp on api.ps_id = sp.ps_id where sp.ps_id is not null order by ps_pid
     </select>
 
-    <select id="queryByChildren" resultMap="menusMap">
-        select * from sp_permission_api as api join sp_permission as sp on api.ps_id = sp.ps_id where ps_pid = #{menuId}
+    <select id="queryAllPermission" resultMap="menusMap">
+        select * from sp_permission_api as api join sp_permission as sp on api.ps_id = sp.ps_id where sp.ps_id is not null
     </select>
 
 </mapper>

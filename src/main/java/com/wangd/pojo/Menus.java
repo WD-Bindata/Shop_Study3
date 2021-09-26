@@ -17,7 +17,7 @@ public class Menus implements Serializable {
     private String apiAction;
     private Integer apiOrder;
     private Integer menuId;
-    private Integer fatherMenuId;
+    private Object fatherMenuId;
     private String menuName;
     private List<Menus> children = new ArrayList<>();
     private Integer level;
@@ -62,11 +62,11 @@ public class Menus implements Serializable {
         this.menuId = menuId;
     }
 
-    public Integer getFatherMenuId() {
+    public Object getFatherMenuId() {
         return fatherMenuId;
     }
 
-    public void setFatherMenuId(Integer fatherMenuId) {
+    public void setFatherMenuId(Object fatherMenuId) {
         this.fatherMenuId = fatherMenuId;
     }
 

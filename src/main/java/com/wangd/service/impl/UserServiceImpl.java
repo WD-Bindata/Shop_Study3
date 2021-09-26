@@ -111,13 +111,6 @@ public class UserServiceImpl implements UserService {
         return oneMenus;
     }
 
-    private Menus searchMenus(Map<Integer, Menus> menusMap, Menus menu){
-        for (Integer integer : menusMap.keySet()) {
-            if (integer.equals(menu.getMenuId())){
-                return menusMap.get(integer);
-            }
-        }
-        return null;
-    }
+
 
 }

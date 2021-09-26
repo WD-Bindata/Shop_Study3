@@ -11,5 +11,5 @@ import java.util.List;
 public interface MenusDAO {
     public List<Menus> queryAllMenus();
 
-    public List<Menus> queryByChildren(@Param("menuId") Integer menuId);
+    public List<Menus> queryAllPermission();
 }

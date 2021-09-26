@@ -1,5 +1,7 @@
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONWriter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wangd.controller.AuthorityManager;
 import com.wangd.controller.ManagerController;
 import com.wangd.controller.UserController;
@@ -15,6 +17,7 @@ import com.wangd.service.UserService;
 import com.wangd.utils.MenusJson;
 import com.wangd.utils.TokenUtils;
 import org.junit.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -165,21 +168,6 @@ public class WebTest {
 
         System.out.println("oneMenus = " + oneMenus);
 
-        List<Role> roleList = roleService.getRoles();
-        Role role = roleList.get(0);
-        String roleIds = role.getRoleIds();
-        List<String> asList = Arrays.asList();
-
-        Map<Integer, Menus> roleHelp = bean.getRoleHelp();
-
-
-        for (Integer integer : roleHelp.keySet()) {
-            Menus menus = roleHelp.get(integer);
-            Integer menuId = menus.getMenuId();
-            if (asList.contains(String.valueOf(menuId))){
-                System.out.println("menus = " + menus);
-            }
-        }
     }
 
 
@@ -234,6 +222,82 @@ public class WebTest {
         System.out.println("result = " + result);
 
 
+    }
+
+    /**
+     * 用于测试：roleService.getPermissions()
+     */
+    @Test
+    public void test10(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        RoleService roleService = ctx.getBean(RoleService.class);
+        List<Role> roleList = roleService.getRoles();
+        for (Role role : roleList) {
+            String[] roleIds = role.getRoleIds().split(",");
+            Map<Integer, Menus> integerMenusMap = roleService.screenPermissions(Arrays.asList(roleIds));
+            System.out.println("JSON.toJSONString(integerMenusMap, true) = " + JSON.toJSONString(integerMenusMap, true));
+        }
+
+    }
+
+    /**
+     * 用于测试：RoleController.getRoles
+     */
+    @Test
+    public void test11(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        AuthorityManager authorityManager = ctx.getBean(AuthorityManager.class);
+        String roles = authorityManager.getRoles();
+        System.out.println("roles = " + roles);
+    }
+
+    /**
+     * 用于测试：AuthorityManager.getRightsTree
+     */
+    @Test
+    public void test12(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        AuthorityManager authorityManager = ctx.getBean(AuthorityManager.class);
+        String rightsTree = authorityManager.getRightsTree();
+        System.out.println("rightsTree = " + rightsTree);
+    }
+
+    /**
+     * 用于测试：RoleService.addRole
+     */
+    @Test
+    public void test13(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        RoleService roleService = ctx.getBean(RoleService.class);
+        Role role = new Role();
+        role.setRoleName("test1");
+        role.setRoleDesc("测设角色");
+        int i = roleService.addRole(role);
+        System.out.println("role = " + role);
+    }
+
+    /**
+     * 用于测试：删除权限
+     */
+    @Test
+    public void test14(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        AuthorityManager authorityManager = ctx.getBean(AuthorityManager.class);
+        String deleteAppointRights = authorityManager.deleteAppointRights(30, 153);
+        System.out.println("deleteAppointRights = " + deleteAppointRights);
+    }
+
+    /**
+     * 用于测试：修改权限
+     */
+    @Test
+    public void test15(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        AuthorityManager authorityManager = ctx.getBean(AuthorityManager.class);
+        HashMap<String, String> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("rids", "105,116,117,115,142,143,144,121,122,123,149,129,134,138,112,147,125,110,131,132,133,136,137,159");
+        String authorizationRoles = authorityManager.authorizationRoles(31, objectObjectHashMap);
+        System.out.println("authorizationRoles = " + authorizationRoles);
     }
 
 }
