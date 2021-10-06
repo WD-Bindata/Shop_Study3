@@ -15,7 +15,7 @@ public interface RoleService {
 
     public Map<Integer, Menus> getPermissions();
 
-    public Map<Integer, Menus> screenPermissions(List<String> ids);
+    public Map<Integer, Menus> getScreenPermissions(List<String> ids);
 
     // 根据ID删除当前权限
     public Map<Integer, Menus> deletePermissions(String[] ids, Integer delRoleId);
@@ -26,7 +26,7 @@ public interface RoleService {
 
     public int addRole(Role role);
 
-    public Role findOneRole(Integer roleId);
+    public Role getOneRole(Integer roleId);
 
     public int editRole(Role role);
 

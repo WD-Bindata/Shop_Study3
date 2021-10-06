@@ -5,7 +5,7 @@
 
 <mapper namespace="com.wangd.dao.MenusDAO">
     <resultMap id="menusMap" type="menus">
-        <result column="api.ps_id" property="id"/>
+        <result column="ps_id" property="id"/>
         <result column="ps_api_action" property="apiAction"/>
         <result column="ps_api_path" property="apiPath"/>
         <result column="ps_api_order" property="apiOrder"/>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wangd.dao.GoodsDAO">
+    <resultMap id="goodsBaseMap" type="goods">
+        <result column="goods_id" property="goodsId"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_price" property="goodsPrice"/>
+        <result column="goods_number" property="goodsNumber"/>
+        <result column="goods_weight" property="goodsWeight"/>
+        <result column="cat_id" property="goodsTypeId"/>
+        <result column="goods_introduce" property="goodsIntroduce"/>
+        <result column="goods_big_logo" property="goodsBigPicture"/>
+        <result column="goods_small_logo" property="goodsSmallPicture"/>
+        <result column="is_del" property="isDel"/>
+        <result column="add_time" property="addTime"/>
+        <result column="upd_time" property="updateTime"/>
+        <result column="delete_time" property="deleteTime"/>
+        <result column="cat_one_id" property="oneClassificationId"/>
+        <result column="cat_two_id" property="towClassificationId"/>
+        <result column="cat_three_id" property="threeClassificationId"/>
+        <result column="hot_mumber" property="hotQuantity"/>
+        <result column="is_promote" property="isPromote"/>
+        <result column="goods_state" property="goodsState"/>
+    </resultMap>
+
+    <select id="queryAllGoods" resultMap="goodsBaseMap">
+        select * from vue_study.sp_goods
+        <where>
+            is_del = '0'
+            <if test="searchParam != null and searchParam != ''">
+                and goods_name = '%#{searchParam}%'
+            </if>
+
+        </where>
+        order by add_time desc limit ${currentPage}, #{pageSize}
+    </select>
+    <select id="queryGoodsTotal" parameterType="int" resultType="int">
+        select count(1) from vue_study.sp_goods where is_del = '0'
+    </select>
+</mapper>

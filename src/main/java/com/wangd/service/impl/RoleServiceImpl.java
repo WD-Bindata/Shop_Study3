@@ -7,6 +7,8 @@ import com.wangd.pojo.Role;
 import com.wangd.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author wangd
  */
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -85,6 +88,7 @@ public class RoleServiceImpl implements RoleService {
         return result;
     }
 
+    @Transactional
     @Override
     public Map<Integer, Menus> deletePermissions(String[] ids, Integer delRoleId) {
         Map<Integer, Menus> menusMap = this.getPermissions();
@@ -134,8 +138,9 @@ public class RoleServiceImpl implements RoleService {
         return menusMap;
     }
 
+
     @Override
-    public Map<Integer, Menus> screenPermissions(List<String> idList) {
+    public Map<Integer, Menus> getScreenPermissions(List<String> idList) {
         // 使用ConcurrentHashMap 解决并发修改问题 ConcurrentModificationException
         ConcurrentHashMap<Integer, Menus> menusMap = new ConcurrentHashMap<>(getPermissions());
         if (idList == null || idList.isEmpty()){
@@ -189,27 +194,32 @@ public class RoleServiceImpl implements RoleService {
 
 
 
+    @Transactional
     @Override
     public int addRole(Role role) {
 
         return roleDAO.addRole(role);
     }
 
+
     @Override
-    public Role findOneRole(Integer roleId) {
+    public Role getOneRole(Integer roleId) {
         return roleDAO.queryOneRole(roleId);
     }
 
+    @Transactional
     @Override
     public int editRole(Role role) {
         return roleDAO.updateRole(role);
     }
 
+    @Transactional
     @Override
     public int deleteRole(Integer roleId) {
         return roleDAO.deleteByRoleId(roleId);
     }
 
+    @Transactional
     @Override
     public List<Menus> getPermissionsList() {
         List<Menus> menusList = menusDAO.queryAllPermission();
@@ -223,6 +233,7 @@ public class RoleServiceImpl implements RoleService {
         return menusList;
     }
 
+    @Transactional
     @Override
     public int updatePermission(Integer roleId, String roleIds) {
         return roleDAO.updateRoleIds(roleId, roleIds);

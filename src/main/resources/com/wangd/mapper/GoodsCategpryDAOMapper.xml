@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wangd.dao.GoodsCategoryDAO">
+    <resultMap id="resultMap" type="goodsCategory">
+        <id column="cat_id" property="id"/>
+        <result column="cat_name" property="categoryName"/>
+        <result column="cat_pid" property="categoryFatherId"/>
+        <result column="cat_level" property="categoryLevel"/>
+        <result column="cat_deleted" property="isDelete"/>
+        <result column="cat_icon" property="categoryIcon"/>
+        <result column="cat_src" property="categorySrc"/>
+    </resultMap>
+
+    <select id="queryAllGoodsCategory" resultMap="resultMap">
+        select * from sp_category where cat_deleted=0
+    </select>
+
+    <select id="queryOneGoodsCategory" resultMap="resultMap" parameterType="java.lang.Integer">
+        select * from sp_category where cat_id = #{categoryId}
+    </select>
+
+    <insert id="insertCategories" parameterType="goodsCategory">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into sp_category(cat_name, cat_pid, cat_level)
+        values (#{categoryName}, #{categoryFatherId}, #{categoryLevel})
+    </insert>
+
+    <update id="updateCategories">
+        update sp_category
+        <set>
+            <choose>
+                <when test="categoryName != null and categoryName != ''">
+                    cat_name=#{categoryName},
+                </when>
+                <when test="isDelete != null and isDelete == 1">
+                    cat_deleted = 1
+                </when>
+            </choose>
+
+
+        </set>
+        where cat_id = #{id}
+    </update>
+
+    <delete id="deleteByCategoryId" parameterType="int">
+        delete FROM sp_category where cat_id=#{categoryId}
+    </delete>
+</mapper>
+

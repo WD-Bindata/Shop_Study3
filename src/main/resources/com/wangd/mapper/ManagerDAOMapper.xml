@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.wangd.dao.ManagerDAO">
+
     <resultMap id="managerMap" type="manager">
         <result column="mg_id" property="id"/>
         <result column="mg_name" property="username"/>
@@ -67,7 +68,7 @@
     </select>
 
     <select id="queryManagerAndRoleById" resultMap="managerMap">
-        select * from sp_manager as manager join sp_role sr on manager.role_id = sr.role_id where manager.mg_id = #{managerId}
+        select * from sp_manager as manager join sp_role role on manager.role_id = role.role_id where manager.mg_id = #{managerId}
     </select>
 
 </mapper>

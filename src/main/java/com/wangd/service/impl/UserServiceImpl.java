@@ -10,12 +10,15 @@ import com.wangd.utils.MenusJson;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 /**
  * @author wangd
  */
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -24,16 +27,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MenusDAO menusDAO;
 
-    @Override
-    public int addUser(User user) {
-        return userDAO.insert(user);
-    }
 
     @Override
     public User login(String username, String password) {
 
 
-        return userDAO.selectByUsername(username, password);
+        return userDAO.queryByUsername(username, password);
     }
 
     @Override

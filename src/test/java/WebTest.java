@@ -1,19 +1,19 @@
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONWriter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wangd.controller.AuthorityManager;
+import com.wangd.controller.GoodsController;
 import com.wangd.controller.ManagerController;
 import com.wangd.controller.UserController;
-import com.wangd.dao.ManagerDAO;
-import com.wangd.dao.MenusDAO;
-import com.wangd.dao.RoleDAO;
-import com.wangd.pojo.Manager;
-import com.wangd.pojo.Menus;
-import com.wangd.pojo.Role;
+import com.wangd.dao.*;
+import com.wangd.pojo.*;
+import com.wangd.service.GoodsService;
 import com.wangd.service.ManagerService;
 import com.wangd.service.RoleService;
 import com.wangd.service.UserService;
+import com.wangd.service.impl.GoodsServiceImpl;
 import com.wangd.utils.MenusJson;
 import com.wangd.utils.TokenUtils;
 import org.junit.Test;
@@ -21,6 +21,13 @@ import org.junit.platform.commons.util.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import javax.print.DocFlavor;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -67,9 +74,14 @@ public class WebTest {
     @Test
     public void test03(){
         ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
-        ManagerController managerController = ctx.getBean(ManagerController.class);
-        String users = managerController.getUsers(null, 2, 10);
-        System.out.println("users = " + users);
+        ManagerService managerService = ctx.getBean(ManagerService.class);
+        Integer pageSize = 5;
+        Integer currentPage = 1 % pageSize;
+        System.out.println("currentPage = " + currentPage);
+        List<Manager> managerList = managerService.queryAllManager(null, currentPage, pageSize);
+        managerList.forEach(manager -> {
+            System.out.println("manager.getId() = " + manager.getId());
+        });
 
 
     }
@@ -234,7 +246,7 @@ public class WebTest {
         List<Role> roleList = roleService.getRoles();
         for (Role role : roleList) {
             String[] roleIds = role.getRoleIds().split(",");
-            Map<Integer, Menus> integerMenusMap = roleService.screenPermissions(Arrays.asList(roleIds));
+            Map<Integer, Menus> integerMenusMap = roleService.getScreenPermissions(Arrays.asList(roleIds));
             System.out.println("JSON.toJSONString(integerMenusMap, true) = " + JSON.toJSONString(integerMenusMap, true));
         }
 
@@ -298,6 +310,76 @@ public class WebTest {
         objectObjectHashMap.put("rids", "105,116,117,115,142,143,144,121,122,123,149,129,134,138,112,147,125,110,131,132,133,136,137,159");
         String authorizationRoles = authorityManager.authorizationRoles(31, objectObjectHashMap);
         System.out.println("authorizationRoles = " + authorizationRoles);
+    }
+
+
+    /**
+     * 用于测试：商品DAO
+     */
+    @Test
+    public void test16(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        GoodsDAO goodsDAO = ctx.getBean(GoodsDAO.class);
+        Integer goodsTotal = goodsDAO.queryGoodsTotal();
+        System.out.println("goodsTotal = " + goodsTotal);
+        List<Goods> goodsList = goodsDAO.queryAllGoods(null, 5, 5);
+        for (Goods goods : goodsList) {
+//            System.out.println("goods = " + goods.get);
+        }
+    }
+
+    /**
+     * 用于测试：商品分类DAO
+     */
+    @Test
+    public void test17(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        GoodsController goodsController = ctx.getBean(GoodsController.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("type", "2");
+        String goodsControllerCategories = goodsController.getCategories(params);
+        System.out.println("goodsController = " + goodsControllerCategories);
+    }
+
+    /**
+     * 用于测试：商品分类插入
+     */
+    @Test
+    public void test18(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        GoodsController goodsController = ctx.getBean(GoodsController.class);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("cat_pid", 325);
+        hashMap.put("cat_name", "测试分类");
+        hashMap.put("cat_level", 2);
+        String addCategories = goodsController.addCategories(hashMap);
+        System.out.println("addCategories = " + addCategories);
+    }
+
+    /**
+     * 用于测试：商品参数查询
+     */
+    @Test
+    public void test19(){
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        GoodsAttributeDAO goodsAttributeDAO = ctx.getBean(GoodsAttributeDAO.class);
+        List<GoodsAttribute> goodsAttributeList = goodsAttributeDAO.queryByCategoryId(1191);
+        goodsAttributeList.forEach(attribute -> {
+            System.out.println("attribute = " + attribute);
+        });
+
+    }
+
+    /**
+     * 用于测试：文件上传
+     */
+    @Test
+    public void test20() throws Exception {
+        String separator = File.separator;
+        String projectDirPath = System.getProperty("user.dir");
+        File file = new File(projectDirPath + separator + "project_temp_png");
+        System.out.println("file.exists() = " + file.isFile());
+
     }
 
 }

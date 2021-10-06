@@ -56,7 +56,7 @@ public class AuthorityManager {
             roleMap.put("roleName", role.getRoleName());
             roleMap.put("roleDesc", role.getRoleDesc());
             List<String> stringList = Arrays.asList(roleIds.split(","));
-            Map<Integer, Menus> screenPermissions = roleService.screenPermissions(stringList);
+            Map<Integer, Menus> screenPermissions = roleService.getScreenPermissions(stringList);
             roleMap.put("children", MenusJson.permissionsErgodicJSON(screenPermissions));
 
             jsonArray.add(roleMap);
@@ -131,7 +131,7 @@ public class AuthorityManager {
 
     @GetMapping("/roles/{roleId}")
     public String getRole(@PathVariable("roleId") Integer roleId){
-        Role role = roleService.findOneRole(roleId);
+        Role role = roleService.getOneRole(roleId);
         if (role == null){
             requestResult.msg = "查询角色失败 请确认角色ID是否存在";
             requestResult.status = 404;
@@ -199,7 +199,7 @@ public class AuthorityManager {
 
     @DeleteMapping("/roles/{roleId}/rights/{rightId}")
     public String deleteAppointRights(@PathVariable("roleId") Integer roleId, @PathVariable("rightId") Integer delRightsId){
-        Role role = roleService.findOneRole(roleId);
+        Role role = roleService.getOneRole(roleId);
 
         List<String> roleIds = new ArrayList<>(Arrays.asList(role.getRoleIds().split(",")));
         // 删除指定ID
@@ -212,7 +212,7 @@ public class AuthorityManager {
             requestResult.status = 302;
             return requestResult.getResult();
         }
-        Map<Integer, Menus> screenPermissions = roleService.screenPermissions(roleIds);
+        Map<Integer, Menus> screenPermissions = roleService.getScreenPermissions(roleIds);
 
 
         requestResult.data = MenusJson.permissionsErgodicJSON(screenPermissions);

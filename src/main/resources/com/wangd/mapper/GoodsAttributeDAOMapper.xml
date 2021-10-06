@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wangd.dao.GoodsAttributeDAO">
+
+    <resultMap id="goodsAttributeResultMap" type="goodsAttribute">
+        <id column="attr_id" property="attributeId"/>
+        <result column="attr_name" property="attributeName"/>
+        <result column="cat_id" property="categoryId"/>
+        <result column="attr_sel" property="attributeSelect"/>
+        <result column="attr_write" property="attributeWrite"/>
+        <result column="attr_vals" property="attributeValues"/>
+        <result column="delete_time" property="deleteTime"/>
+    </resultMap>
+
+
+    <select id="queryByCategoryId" parameterType="int" resultMap="goodsAttributeResultMap">
+        select * from sp_attribute where cat_id=#{categoryId} and delete_time is null
+    </select>
+
+    <insert id="insertGoodsAttribute" parameterType="goodsAttribute">
+        <selectKey keyProperty="attributeId" order="AFTER" resultType="int">
+            select last_insert_id() as id
+        </selectKey>
+        insert into sp_attribute(attr_name, attr_sel, attr_vals, cat_id)
+        values (#{attributeName}, #{attributeSelect}, #{attributeValues}, #{categoryId})
+    </insert>
+    <update id="deleteAttributeByCategoryIdAndAttributeId" parameterType="int">
+        update sp_attribute set delete_time=unix_timestamp() where cat_id = #{categoryId} and attr_id = #{attributeId}
+    </update>
+
+    <select id="queryAttributeByCategoryIdAndAttributeId" parameterType="int" resultMap="goodsAttributeResultMap">
+        select * from sp_attribute where cat_id = #{categoryId} and attr_id = #{attributeId} and delete_time is null
+    </select>
+
+    <update id="updateAttribute" parameterType="int">
+        update sp_attribute
+        <set>
+            <choose>
+                <when test="attributeName != null and attributeName != ''">
+                    attr_name = #{attributeName},
+                </when>
+                <when test="attributeSelect != null and attributeSelect != ''">
+                    attr_sel = #{attributeSelect},
+                </when>
+                <when test="attributeValues != null and attributeValues != ''">
+                    attr_vals = #{attributeValues}
+                </when>
+            </choose>
+        </set>
+        <where>
+            cat_id = #{categoryId} and attr_id = #{attributeId}
+        </where>
+    </update>
+
+</mapper>

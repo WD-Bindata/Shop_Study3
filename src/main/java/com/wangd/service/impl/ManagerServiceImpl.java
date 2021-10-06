@@ -5,6 +5,8 @@ import com.wangd.pojo.Manager;
 import com.wangd.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +14,7 @@ import java.util.List;
  * @author wangd
  */
 @Service
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 public class ManagerServiceImpl implements ManagerService {
     @Autowired
     private ManagerDAO managerDAO;
@@ -25,6 +28,8 @@ public class ManagerServiceImpl implements ManagerService {
     public List<Manager> queryAllManager(String queryParam, Integer currPage, Integer pageSize) {
         if (currPage == 1){
             currPage = 0;
+        } else {
+            currPage = (currPage * pageSize) - pageSize + 1;
         }
         List<Manager> managerList = managerDAO.byUsernameQueryManager(queryParam, currPage, pageSize);
 
@@ -36,6 +41,7 @@ public class ManagerServiceImpl implements ManagerService {
         return managerDAO.getManagerCount();
     }
 
+    @Transactional
     @Override
     public int addManager(Manager manager) {
         return managerDAO.insertManager(manager);
@@ -46,6 +52,7 @@ public class ManagerServiceImpl implements ManagerService {
         return managerDAO.queryById(managerId);
     }
 
+    @Transactional
     @Override
     public Manager editState(Integer userid, Integer state){
         int number_of_affected = managerDAO.updateState(userid, state);
@@ -57,6 +64,7 @@ public class ManagerServiceImpl implements ManagerService {
         return manager;
     }
 
+    @Transactional
     @Override
     public Manager editManager(Manager manager) {
         int i = managerDAO.updateManager(manager);
@@ -67,6 +75,7 @@ public class ManagerServiceImpl implements ManagerService {
         return managerResult;
     }
 
+    @Transactional
     @Override
     public int deleteById(Integer userid) {
         return managerDAO.deleteById(userid);
