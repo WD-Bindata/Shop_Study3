@@ -1,5 +1,7 @@
 package com.wangd.filter;
 
+import org.springframework.beans.factory.InitializingBean;
+
 import javax.servlet.*;
 import java.io.IOException;
 
@@ -59,3 +61,5 @@ public class CORSFilter implements Filter {
 
 
 }
+
+

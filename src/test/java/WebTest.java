@@ -3,6 +3,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONWriter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.wangd.annotaion.APIMappingValue;
+import com.wangd.annotaion.UserTest;
 import com.wangd.controller.AuthorityManager;
 import com.wangd.controller.GoodsController;
 import com.wangd.controller.ManagerController;
@@ -18,11 +20,18 @@ import com.wangd.utils.MenusJson;
 import com.wangd.utils.TokenUtils;
 import org.junit.Test;
 import org.junit.platform.commons.util.StringUtils;
+import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.expression.AnnotatedElementKey;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.AnnotationAttributes;
 
 import javax.print.DocFlavor;
 import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -380,6 +389,20 @@ public class WebTest {
         File file = new File(projectDirPath + separator + "project_temp_png");
         System.out.println("file.exists() = " + file.isFile());
 
+    }
+
+    /**
+     * 用于测试：注解测试
+     */
+    @Test
+    public void test21() throws Exception{
+
+        UserTest userTest = new UserTest();
+        userTest.setName("wangd");
+        userTest.setPassword("12345");
+
+        AnnotationAttributes value = AnnotatedElementUtils.findMergedAnnotationAttributes(APIMappingValue.class, "APIMappingValue", true, true);
+        System.out.println("value = " + value);
     }
 
 }

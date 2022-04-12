@@ -2,10 +2,13 @@ package com.wangd.interceptor;
 
 import com.sun.javafx.util.Utils;
 import com.sun.tools.javac.util.StringUtils;
+import com.wangd.dao.ManagerDAO;
+import com.wangd.pojo.Manager;
 import com.wangd.utils.RequestResult;
 import com.wangd.utils.TokenUtils;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Invocation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import sun.jvm.hotspot.runtime.Bytes;
 
@@ -20,9 +23,13 @@ import java.util.Enumeration;
  */
 public class TokenInterceptor implements HandlerInterceptor {
 
+    @Autowired
+    private ManagerDAO managerDAO;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         response.setCharacterEncoding("UTF-8");
+        System.out.println("managerDAO.getManagerCount() = " + managerDAO.getManagerCount());
         if ("OPTIONS".equals(request.getMethod().toUpperCase()) || "PUT".equals(request.getMethod().toUpperCase())){
 
             return true;
